@@ -16,13 +16,16 @@ export default function VideoItem({ video }) {
   const handleDelete = async () => {
     try {
       // (deletes Cloudinary)
-      await fetch("/api/delete-video", {
+      const res = await fetch("/api/delete-video", {
         method: "POST",
-        body: JSON.stringify({
-          id: video.id,
-          public_id: video.public_id
-        })
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(video)
       });
+      
+      const data = await res.json();
+      console.log("DELETE RESPONSE:", data);
   
       // delete from Firestore
       await deleteDoc(doc(db, "videos", video.id));
