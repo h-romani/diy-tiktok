@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { doc, updateDoc, increment, deleteDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faTrash, faLayerGroup } from "@fortawesome/free-solid-svg-icons";
 
 export default function VideoItem({ video }) {
   const [open, setOpen] = useState(false);
@@ -12,6 +12,22 @@ export default function VideoItem({ video }) {
   const [title, setTitle] = useState(video.title || "Untitled");
   const videoRef = useRef(null);
   const hasCounted = useRef(false);
+  const [catOpen, setCatOpen] = useState(false);
+  const [category, setCategory] = useState(video.category || "main");
+
+  const saveCategory = async () => {
+    try {
+      const ref = doc(db, "videos", video.id);
+  
+      await updateDoc(ref, {
+        category: category
+      });
+  
+      setCatOpen(false);
+    } catch (err) {
+      console.error("Error updating category:", err);
+    }
+  };
 
   const handleDelete = async () => {
     try {
@@ -25,7 +41,6 @@ export default function VideoItem({ video }) {
       });
       
       const data = await res.json();
-      console.log("DELETE RESPONSE:", data);
   
       // delete from Firestore
       await deleteDoc(doc(db, "videos", video.id));
@@ -116,6 +131,14 @@ export default function VideoItem({ video }) {
         />
 
           <div
+            className="category-btn"
+            onClick={() => setCatOpen(true)}
+            title="Change category"
+          >
+            <FontAwesomeIcon icon={faLayerGroup} />
+          </div>
+
+          <div
               className="delete-btn"
               onClick={() => setDel(true)}
               >
@@ -146,6 +169,25 @@ export default function VideoItem({ video }) {
             <div className="modal" onClick={(e) => e.stopPropagation()}>
               <h4>Are you sure you want to permanently delete this video?</h4>
               <button onClick={handleDelete}>Yes</button>
+            </div>
+          </div>
+        )}
+
+
+        {catOpen && (
+          <div className="modal-backdrop" onClick={() => setCatOpen(false)}>
+            <div className="modal" onClick={(e) => e.stopPropagation()}>
+              <h3>Set Category</h3>
+
+              <input
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                placeholder="e.g. main, comedy, sports"
+              />
+
+              <button onClick={saveCategory}>
+                Save
+              </button>
             </div>
           </div>
         )}
