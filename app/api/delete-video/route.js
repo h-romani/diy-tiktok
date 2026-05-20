@@ -19,7 +19,11 @@ export async function POST(req) {
     }
 
     // delete from Cloudinary
-    await cloudinary.uploader.destroy(public_id);
+    const result = await cloudinary.uploader.destroy(public_id, {
+      resource_type: "video"
+    });
+    
+    console.log("Cloudinary result:", result);
 
     // delete from Firestore (client-safe approach below)
     return NextResponse.json({ success: true });
