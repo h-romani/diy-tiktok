@@ -320,6 +320,32 @@ video {
   font-size: 18px;
 }
 
+.category-btn {
+  position: absolute;
+  bottom: 70px;
+  right: 20px;
+  z-index: 10;
+
+  width: 45px;
+  height: 45px;
+
+  border-radius: 50%;
+  background: rgba(0,0,0,0.6);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+  cursor: pointer;
+
+  font-size: 18px;
+}
+
+.category-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
 
 
 /* MOBILE */
